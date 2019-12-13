@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IotHomeDevice.Console", "IotHomeDevice.Console\IotHomeDevice.Console.csproj", "{F65AB785-246F-4D5F-80C7-52E5458D8469}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotHomeDevice.Windows", "IotHomeDevice.Windows\IotHomeDevice.Windows.csproj", "{01F19FD9-20EB-4F64-9E14-C749560450A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotHomeDevice.Linux", "IotHomeDevice.Linux\IotHomeDevice.Linux.csproj", "{D2517E7F-8D57-4438-A571-412A68BC93CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotHomeDevice.Interfaces", "IotHomeDevice.Interfaces\IotHomeDevice.Interfaces.csproj", "{BB4002FB-EEE9-44CA-B140-BB224E29893A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F65AB785-246F-4D5F-80C7-52E5458D8469}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F65AB785-246F-4D5F-80C7-52E5458D8469}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F65AB785-246F-4D5F-80C7-52E5458D8469}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F65AB785-246F-4D5F-80C7-52E5458D8469}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01F19FD9-20EB-4F64-9E14-C749560450A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01F19FD9-20EB-4F64-9E14-C749560450A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01F19FD9-20EB-4F64-9E14-C749560450A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01F19FD9-20EB-4F64-9E14-C749560450A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2517E7F-8D57-4438-A571-412A68BC93CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2517E7F-8D57-4438-A571-412A68BC93CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2517E7F-8D57-4438-A571-412A68BC93CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2517E7F-8D57-4438-A571-412A68BC93CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB4002FB-EEE9-44CA-B140-BB224E29893A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB4002FB-EEE9-44CA-B140-BB224E29893A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB4002FB-EEE9-44CA-B140-BB224E29893A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB4002FB-EEE9-44CA-B140-BB224E29893A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F0F43F0B-7448-4762-B041-A1282349FEAD}
+	EndGlobalSection
+EndGlobal
