@@ -5,6 +5,12 @@ VisualStudioVersion = 16.0.29609.76
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IotHomeService.App", "IotHomeService.App\IotHomeService.App.csproj", "{3490E855-082A-4F3D-A4DC-88B935457505}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IotHomeService.Model", "IotHomeService.Model\IotHomeService.Model.csproj", "{D1723E48-368D-48D9-A946-60624E2049D9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IotHomeService.Services", "IotHomeService.Services\IotHomeService.Services.csproj", "{ED187960-058A-48A5-9EB3-665EC5EC6087}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotHomeService.ReadingsMonitor", "IotHomeService.ReadingsMonitor\IotHomeService.ReadingsMonitor.csproj", "{0C518E95-91B5-48E8-88C5-083E688F0B51}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +21,18 @@ Global
 		{3490E855-082A-4F3D-A4DC-88B935457505}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3490E855-082A-4F3D-A4DC-88B935457505}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3490E855-082A-4F3D-A4DC-88B935457505}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1723E48-368D-48D9-A946-60624E2049D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1723E48-368D-48D9-A946-60624E2049D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1723E48-368D-48D9-A946-60624E2049D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1723E48-368D-48D9-A946-60624E2049D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED187960-058A-48A5-9EB3-665EC5EC6087}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED187960-058A-48A5-9EB3-665EC5EC6087}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED187960-058A-48A5-9EB3-665EC5EC6087}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED187960-058A-48A5-9EB3-665EC5EC6087}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C518E95-91B5-48E8-88C5-083E688F0B51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C518E95-91B5-48E8-88C5-083E688F0B51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C518E95-91B5-48E8-88C5-083E688F0B51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C518E95-91B5-48E8-88C5-083E688F0B51}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

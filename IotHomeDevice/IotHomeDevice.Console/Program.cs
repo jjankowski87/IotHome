@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using System;
 using System.Threading.Tasks;
 using IotHomeDevice.Console.Configuration;
 using IotHomeDevice.Interfaces;
@@ -49,7 +49,7 @@ namespace IotHomeDevice.Console
         private static AppSettings LoadApplicationSettings()
         {
             var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
+                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile(SettingsFileName);
 
             var configuration = builder.Build();

@@ -262,5 +262,3 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
-IotHomeService/IotHomeService.App/Properties/PublishProfiles/
-IotHomeService/IotHomeService.ReadingsMonitor/Properties/PublishProfiles/IotHomeService-ReadingsMonitor - Zip Deploy.pubxml

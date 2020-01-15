@@ -1,0 +1,50 @@
+﻿@using Blazorise.Components;
+
+<div class="date-time-component">
+    <DateEdit Date="@DateTime.Date" DateChanged="@OnDateChanged" />
+
+    <SelectList Data="@_hours"
+                TextField="@(item => item.ToString("00"))"
+                ValueField="@(item => item)"
+                SelectedValueChanged="@OnHourChanged" />
+
+    <SelectList Data="@_minutes"
+                TextField="@(item => item.ToString("00"))"
+                ValueField="@(item => item)"
+                SelectedValueChanged="@OnMinuteChanged" />
+</div>
+
+@code{
+    private IList<int> _hours = Enumerable.Range(0, 24).ToList();
+    private IList<int> _minutes = new[] { 0, 15, 30, 45 };
+
+    [Parameter]
+    public DateTime DateTime { get; set; }
+
+    [Parameter]
+    public EventCallback<DateTime> DateTimeChanged { get; set; }
+
+    private async Task OnDateChanged(DateTime? newDate)
+    {
+        var date = newDate ?? DateTime.Today;
+
+        DateTime = new DateTime(date.Year, date.Month, date.Day, DateTime.Hour, DateTime.Minute, 0);
+        await DateTimeChanged.InvokeAsync(DateTime);
+    }
+
+    private async Task OnHourChanged(object newValue)
+    {
+        var hour = int.Parse(newValue.ToString());
+
+        DateTime = new DateTime(DateTime.Year, DateTime.Month, DateTime.Day, hour, DateTime.Minute, 0);
+        await DateTimeChanged.InvokeAsync(DateTime);
+    }
+
+    private async Task OnMinuteChanged(object newValue)
+    {
+        var minute = int.Parse(newValue.ToString());
+
+        DateTime = new DateTime(DateTime.Year, DateTime.Month, DateTime.Day, DateTime.Hour, minute, 0);
+        await DateTimeChanged.InvokeAsync(DateTime);
+    }
+}

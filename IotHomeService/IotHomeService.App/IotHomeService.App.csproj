@@ -12,4 +12,9 @@
     <PackageReference Include="Microsoft.Azure.EventHubs" Version="4.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\IotHomeService.Model\IotHomeService.Model.csproj" />
+    <ProjectReference Include="..\IotHomeService.Services\IotHomeService.Services.csproj" />
+  </ItemGroup>
+
 </Project>

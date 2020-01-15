@@ -153,3 +153,19 @@ div.number-of-items select {
     width: 100px;
     float: right;
 }
+
+div.custom-checkbox input.checkbox-child {
+    position: inherit;
+    margin-left: 10px;
+}
+
+div.date-time-component input.form-control {
+    width: 170px;
+    display: inline-block;
+}
+
+div.date-time-component select.custom-select {
+    width: 60px;
+    display: inline-block;
+    margin-top: -3px;
+}

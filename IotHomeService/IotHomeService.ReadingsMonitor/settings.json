@@ -1,0 +1,11 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "ServiceBaseAddress": "https://localhost:44320",
+    "StorageContainerName": "dev",
+    "StorageDirectory": "IoTHomeServiceHub/",
+    "BlobStorageConnectionString": ""
+  }
+}

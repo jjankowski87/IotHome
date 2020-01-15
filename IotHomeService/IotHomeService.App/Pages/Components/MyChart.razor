@@ -1,0 +1,71 @@
+﻿@using Blazorise.Charts;
+@using IotHomeService.App.Services.Interfaces
+@using IotHomeService.Model
+@inject IReadingsService ReadingsService;
+
+<LineChart @ref="_lineChart" TItem="decimal?" />
+
+@code {
+    private const int DateOffset = 1;
+
+    private readonly List<string> _backgroundColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.2f), ChartColor.FromRgba(54, 162, 235, 0.2f), ChartColor.FromRgba(255, 206, 86, 0.2f), ChartColor.FromRgba(75, 192, 192, 0.2f), ChartColor.FromRgba(153, 102, 255, 0.2f), ChartColor.FromRgba(255, 159, 64, 0.2f) };
+    private readonly List<string> _borderColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f), ChartColor.FromRgba(54, 162, 235, 1f), ChartColor.FromRgba(255, 206, 86, 1f), ChartColor.FromRgba(75, 192, 192, 1f), ChartColor.FromRgba(153, 102, 255, 1f), ChartColor.FromRgba(255, 159, 64, 1f) };
+
+    private LineChart<decimal?> _lineChart;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await RefreshChartDataAsync(new Dictionary<SensorDetails, IList<SensorReading>>());
+        }
+    }
+
+    public async Task ShowChart(DateTime from, DateTime to)
+    {
+        var readings = await ReadingsService.GetReadingsAsync(from, to);
+        await RefreshChartDataAsync(readings);
+    }
+
+    private async Task RefreshChartDataAsync(IDictionary<SensorDetails, IList<SensorReading>> data)
+    {
+        _lineChart.Clear();
+
+        if (data.Any())
+        {
+            AddLabels(data.First().Value.Select(r => r.Date));
+
+            var i = 0;
+            foreach (var line in data)
+            {
+                AddData(line.Value.Select(r => r.Value), $"{line.Key.Type} - {line.Key.Name}", i++);
+            }
+        }
+        else
+        {
+            AddLabels(Enumerable.Empty<DateTimeOffset>());
+            AddData(Enumerable.Empty<decimal?>(), string.Empty);
+        }
+
+        await _lineChart.Update();
+    }
+
+    private void AddLabels(IEnumerable<DateTimeOffset> labels)
+    {
+        _lineChart.AddLabel(labels.Select(l => l.ToOffset(TimeSpan.FromHours(DateOffset)).ToString("yyyy-MM-dd HH:mm")).ToArray());
+    }
+
+    private void AddData(IEnumerable<decimal?> data, string header, int colorIndex = 0)
+    {
+        _lineChart.AddDataSet(new LineChartDataset<decimal?>
+        {
+            Label = header,
+            Data = data.ToList(),
+            BackgroundColor = _backgroundColors.Skip(colorIndex % _backgroundColors.Count).Take(1).ToList(),
+            BorderColor = _borderColors.Skip(colorIndex % _borderColors.Count).Take(1).ToList(),
+            Fill = true,
+            PointRadius = 2,
+            BorderDash = new List<int>()
+        });
+    }
+}

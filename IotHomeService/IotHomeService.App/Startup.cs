@@ -1,7 +1,11 @@
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
-using IotHomeService.App.Data;
+using IotHomeService.App.Services;
+using IotHomeService.App.Services.Interfaces;
+using IotHomeService.Model;
+using IotHomeService.Services;
+using IotHomeService.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,15 +27,17 @@ namespace IotHomeService.App
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var iotSettings = new IotSettings();
-            Configuration.GetSection("IotSettings").Bind(iotSettings);
+            var storageConfiguration = new StorageConfiguration();
+            Configuration.GetSection("StorageConfiguration").Bind(storageConfiguration);
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<IotHubListener>();
-            services.AddSingleton<IHostedService>(x => x.GetRequiredService<IotHubListener>());
 
-            services.AddSingleton(iotSettings);
+            services.AddSingleton(storageConfiguration);
+            services.AddSingleton<IReadingsNotifier, ReadingsNotifier>();
+            services.AddScoped<IStorageExplorer, StorageExplorer>();
+            services.AddScoped<IReadingsService, ReadingsService>();
+            services.AddScoped<IStorageHelper, StorageHelper>();
 
             services
                 .AddBlazorise(options =>

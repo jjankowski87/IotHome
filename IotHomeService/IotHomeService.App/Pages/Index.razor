@@ -1,97 +1,52 @@
 ﻿@page "/"
-@using Blazorise.Charts;
-@using Blazorise.Components;
-@using IotHomeService.App.Data
-@inject IotHubListener Listener;
+@using IotHomeService.App.Services.Interfaces
+@using IotHomeService.App.Pages.Components;
+@using IotHomeService.Model
+@inject IReadingsNotifier ReadingsNotifier;
+@inject IReadingsService ReadingsService;
 @implements IDisposable;
 
-<h1>Device temperature</h1>
+<h1>Home</h1>
+<DateTimeField @bind-DateTime="_from" />
+<DateTimeField @bind-DateTime="_to" />
+<Button Clicked="@OnFilterClicked">Filter</Button>
 
-<div class="number-of-items">
-    <SelectList Data="@NumberOfItems"
-                TextField="@(item => item.ToString())"
-                ValueField="@(item => item)"
-                SelectedValue="@DisplayedItems"
-                SelectedValueChanged="@ChangeNumberOfItems" />
-</div>
-
-<LineChart @ref="_lineChart" TItem="decimal" />
+<MyChart @ref="_decimalChart" />
 
 @code {
-    private static readonly List<int> NumberOfItems = new List<int> { 10, 20, 30, 40 };
+    private DateTime _from = DateTime.Today;
+    private DateTime _to = DateTime.Today.AddDays(1);
 
-    private readonly List<string> _backgroundColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.2f), ChartColor.FromRgba(54, 162, 235, 0.2f), ChartColor.FromRgba(255, 206, 86, 0.2f), ChartColor.FromRgba(75, 192, 192, 0.2f), ChartColor.FromRgba(153, 102, 255, 0.2f), ChartColor.FromRgba(255, 159, 64, 0.2f) };
-    private readonly List<string> _borderColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f), ChartColor.FromRgba(54, 162, 235, 1f), ChartColor.FromRgba(255, 206, 86, 1f), ChartColor.FromRgba(75, 192, 192, 1f), ChartColor.FromRgba(153, 102, 255, 1f), ChartColor.FromRgba(255, 159, 64, 1f) };
-    private Queue<MessageDetails> _messages;
-    
-    private LineChart<decimal> _lineChart;
-
-    public int DisplayedItems { get; set; } = 10;
+    private MyChart _decimalChart;
 
     public void Dispose()
     {
-        Listener.NotifyMessageAdded -= OnNotifyMessageAdded;
+        ReadingsNotifier.NewReadingsAppeared -= OnNewReadingsAppeared;
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        var messages = Listener.Messages.ToList();
-        _messages = new Queue<MessageDetails>(messages.Skip(Math.Max(0, messages.Count - DisplayedItems)));
-        Listener.NotifyMessageAdded += OnNotifyMessageAdded;
+        ReadingsNotifier.NewReadingsAppeared += OnNewReadingsAppeared;
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await HandleRedraw();
-        }
-    }
-
-    private async Task OnNotifyMessageAdded(IEnumerable<MessageDetails> newMessages)
+    private async Task OnNewReadingsAppeared(SensorDetails sensor, SensorReading reading)
     {
         await InvokeAsync(async () =>
         {
-
-            foreach (var message in newMessages)
+            if (reading.Date >= _from && reading.Date <= _to)
             {
-                _messages.Enqueue(message);
-                if (_messages.Count > DisplayedItems)
-                {
-                    _messages.Dequeue();
-                }
+                await OnFilterClicked();
             }
-
-            await HandleRedraw();
         });
     }
 
-    private async Task ChangeNumberOfItems(object newValue)
+    private async Task OnFilterClicked()
     {
-        DisplayedItems = Convert.ToInt32(newValue);
-
-        var messages = Listener.Messages.ToList();
-        _messages = new Queue<MessageDetails>(messages.Skip(Math.Max(0, messages.Count - DisplayedItems)));
-        
-        await HandleRedraw();
-    }
-
-    private async Task HandleRedraw()
-    {
-        _lineChart.Clear();
-
-        _lineChart.AddLabel(_messages.Select(m => m.EnqueuedTime.ToString("HH:mm")).ToArray());
-        _lineChart.AddDataSet(new LineChartDataset<decimal>
+        if (_from > _to)
         {
-            Label = "Raspberry PI",
-            Data = _messages.Select(m => m.Message?.Temperature ?? 0m).ToList(),
-            BackgroundColor = _backgroundColors,
-            BorderColor = _borderColors,
-            Fill = true,
-            PointRadius = 2,
-            BorderDash = new List<int> { }
-        });
+            return;
+        }
 
-        await _lineChart.Update();
+        await _decimalChart.ShowChart(_from, _to);
     }
 }
