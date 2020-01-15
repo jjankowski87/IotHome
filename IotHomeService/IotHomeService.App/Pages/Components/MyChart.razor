@@ -6,7 +6,7 @@
 <LineChart @ref="_lineChart" TItem="decimal?" />
 
 @code {
-    private const int DateOffset = 1;
+    private static readonly TimeZoneInfo TimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
 
     private readonly List<string> _backgroundColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.2f), ChartColor.FromRgba(54, 162, 235, 0.2f), ChartColor.FromRgba(255, 206, 86, 0.2f), ChartColor.FromRgba(75, 192, 192, 0.2f), ChartColor.FromRgba(153, 102, 255, 0.2f), ChartColor.FromRgba(255, 159, 64, 0.2f) };
     private readonly List<string> _borderColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f), ChartColor.FromRgba(54, 162, 235, 1f), ChartColor.FromRgba(255, 206, 86, 1f), ChartColor.FromRgba(75, 192, 192, 1f), ChartColor.FromRgba(153, 102, 255, 1f), ChartColor.FromRgba(255, 159, 64, 1f) };
@@ -52,7 +52,7 @@
 
     private void AddLabels(IEnumerable<DateTimeOffset> labels)
     {
-        _lineChart.AddLabel(labels.Select(l => l.ToOffset(TimeSpan.FromHours(DateOffset)).ToString("yyyy-MM-dd HH:mm")).ToArray());
+        _lineChart.AddLabel(labels.Select(l => TimeZoneInfo.ConvertTime(l, TimeZone).ToString("yyyy-MM-dd HH:mm")).ToArray());
     }
 
     private void AddData(IEnumerable<decimal?> data, string header, int colorIndex = 0)
