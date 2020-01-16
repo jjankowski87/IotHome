@@ -13,6 +13,9 @@
 
     private LineChart<decimal?> _lineChart;
 
+    [CascadingParameter]
+    public Spinner Spinner { get; set; }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -23,8 +26,11 @@
 
     public async Task ShowChart(DateTime from, DateTime to)
     {
-        var readings = await ReadingsService.GetReadingsAsync(from, to);
-        await RefreshChartDataAsync(readings);
+        using (Spinner.ShowSpinner())
+        {
+            var readings = await ReadingsService.GetReadingsAsync(from, to);
+            await RefreshChartDataAsync(readings);
+        }
     }
 
     private async Task RefreshChartDataAsync(IDictionary<SensorDetails, IList<SensorReading>> data)

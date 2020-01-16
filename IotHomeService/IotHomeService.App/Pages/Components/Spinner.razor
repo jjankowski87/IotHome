@@ -1,0 +1,54 @@
+﻿@implements IDisposable
+
+@if (@_loaders.Any())
+{
+    <div class="d-flex justify-content-center overlay">
+        <div class="spinner-border text-warning" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+}
+
+@code{
+    private readonly IList<Loader> _loaders = new List<Loader>();
+
+    public IDisposable ShowSpinner()
+    {
+        var loader = new Loader(RemoveLoader);
+        _loaders.Add(loader);
+        StateHasChanged();
+
+        return loader;
+    }
+
+    public void Dispose()
+    {
+        foreach (var loader in _loaders)
+        {
+            loader.Dispose();
+        }
+
+        _loaders.Clear();
+    }
+
+    private void RemoveLoader(Loader loader)
+    {
+        _loaders.Remove(loader);
+        StateHasChanged();
+    }
+
+    private class Loader : IDisposable
+    {
+        private readonly Action<Loader> _disposeAction;
+
+        public Loader(Action<Loader> disposeAction)
+        {
+            _disposeAction = disposeAction;
+        }
+
+        public void Dispose()
+        {
+            _disposeAction(this);
+        }
+    }
+}

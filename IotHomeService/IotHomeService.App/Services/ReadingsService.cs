@@ -57,10 +57,12 @@ namespace IotHomeService.App.Services
 
         private DateTime NormalizeDateTime(DateTime dateTime)
         {
-            var universalDateTime = TimeZoneInfo.ConvertTimeToUtc(dateTime, _configuration.ApplicationTimeZone);
+            var universalDateTime = new DateTimeOffset(dateTime, _configuration.ApplicationTimeZone.GetUtcOffset(dateTime))
+                    .ToUniversalTime().DateTime;
             var universalTime = universalDateTime.TimeOfDay;
-            
-            return universalDateTime.Date.AddMinutes(Math.Round(universalTime.TotalMinutes / SamplingWindow) * SamplingWindow);
+
+            return universalDateTime.Date.AddMinutes(Math.Round(universalTime.TotalMinutes / SamplingWindow) *
+                                                     SamplingWindow);
         }
     }
 }

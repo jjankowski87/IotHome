@@ -6,27 +6,32 @@
 @inject IReadingsService ReadingsService;
 @implements IDisposable;
 
-<h1>Home</h1>
-<DateTimeField @bind-DateTime="_from" />
-<DateTimeField @bind-DateTime="_to" />
-<Button Clicked="@OnFilterClicked">Filter</Button>
+<Spinner @ref="_spinner" />
+<CascadingValue Value="_spinner">
+    <h1>Home</h1>
 
-<MyChart @ref="_decimalChart" />
+    <DateTimeField @bind-DateTime="_from" />
+    <DateTimeField @bind-DateTime="_to" />
+    <Button Clicked="@OnFilterClicked">Filter</Button>
+
+    <MyChart @ref="_decimalChart" />
+</CascadingValue>
 
 @code {
-    private DateTime _from = DateTime.Today;
-    private DateTime _to = DateTime.Today.AddDays(1);
-
+    private Spinner _spinner;
     private MyChart _decimalChart;
 
-    public void Dispose()
-    {
-        ReadingsNotifier.NewReadingsAppeared -= OnNewReadingsAppeared;
-    }
+    private DateTime _from = DateTime.Today;
+    private DateTime _to = DateTime.Today.AddDays(1);
 
     protected override async Task OnInitializedAsync()
     {
         ReadingsNotifier.NewReadingsAppeared += OnNewReadingsAppeared;
+    }
+
+    public void Dispose()
+    {
+        ReadingsNotifier.NewReadingsAppeared -= OnNewReadingsAppeared;
     }
 
     private async Task OnNewReadingsAppeared(SensorDetails sensor, SensorReading reading)
