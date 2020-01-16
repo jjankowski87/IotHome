@@ -1,6 +1,8 @@
+using System;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using IotHomeService.App.Configuration;
 using IotHomeService.App.Services;
 using IotHomeService.App.Services.Interfaces;
 using IotHomeService.Model;
@@ -27,13 +29,13 @@ namespace IotHomeService.App
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var storageConfiguration = new StorageConfiguration();
-            Configuration.GetSection("StorageConfiguration").Bind(storageConfiguration);
-
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
-            services.AddSingleton(storageConfiguration);
+            services.AddSingleton(GetConfiguration<StorageConfiguration>("StorageConfiguration"));
+            services.AddSingleton(GetConfiguration<RawAppConfiguration>("AppConfiguration"));
+            services.AddSingleton<AppConfiguration>();
+
             services.AddSingleton<IReadingsNotifier, ReadingsNotifier>();
             services.AddScoped<IStorageExplorer, StorageExplorer>();
             services.AddScoped<IReadingsService, ReadingsService>();
@@ -77,6 +79,14 @@ namespace IotHomeService.App
                 endpoints.MapFallbackToPage("/_Host");
                 endpoints.MapControllers();
             });
+        }
+
+        private TConfiguration GetConfiguration<TConfiguration>(string sectionName)
+        {
+            var config = (TConfiguration)Activator.CreateInstance(typeof(TConfiguration));
+            Configuration.GetSection(sectionName).Bind(config);
+
+            return config;
         }
     }
 }

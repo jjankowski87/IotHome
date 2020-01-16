@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IotHomeService.App.Configuration;
 using IotHomeService.App.Services.Interfaces;
 using IotHomeService.Model;
 using IotHomeService.Services.Interfaces;
@@ -10,14 +11,18 @@ namespace IotHomeService.App.Services
 {
     public class ReadingsService : IReadingsService
     {
+        // TODO: sampling should depend on window size
+        // 15min, 30min, 1h etc
         private const int SamplingWindow = 15;
         private const int HalfWindow = 7;
 
         private readonly IStorageExplorer _storageExplorer;
+        private readonly AppConfiguration _configuration;
 
-        public ReadingsService(IStorageExplorer storageExplorer)
+        public ReadingsService(IStorageExplorer storageExplorer, AppConfiguration configuration)
         {
             _storageExplorer = storageExplorer;
+            _configuration = configuration;
         }
 
         public async Task<IDictionary<SensorDetails, IList<SensorReading>>> GetReadingsAsync(DateTime fromDate, DateTime toDate)
@@ -32,7 +37,7 @@ namespace IotHomeService.App.Services
                 .ToDictionary(g => g.Key, g => (IList<SensorReading>)AdjustReadings(g.ToList(), from, to).ToList());
         }
 
-        private static IEnumerable<SensorReading> AdjustReadings(IList<IotMessage<Reading>> readings, DateTime from, DateTime to)
+        private IEnumerable<SensorReading> AdjustReadings(IList<IotMessage<Reading>> readings, DateTime from, DateTime to)
         {
             var window = (to - from).TotalMinutes;
 
@@ -40,17 +45,19 @@ namespace IotHomeService.App.Services
             foreach (var readingTime in Enumerable.Range(0, (int)Math.Ceiling(window / SamplingWindow) + 1).Select(i => from.AddMinutes(i * SamplingWindow)))
             {
                 var matching = readings.Where(r => Math.Abs((r.EnqueuedTimeUtc - readingTime).TotalMinutes) <= HalfWindow).ToList();
+                var localTime = TimeZoneInfo.ConvertTimeFromUtc(readingTime, _configuration.ApplicationTimeZone);
 
-                result.Add(new SensorReading(new DateTimeOffset(readingTime),
+                result.Add(new SensorReading(
+                    new DateTimeOffset(localTime, _configuration.ApplicationTimeZone.GetUtcOffset(localTime)),
                     matching.Any() ? matching.Average(m => m.Body.Value) : (decimal?) null));
             }
 
             return result;
         }
 
-        private static DateTime NormalizeDateTime(DateTime dateTime)
+        private DateTime NormalizeDateTime(DateTime dateTime)
         {
-            var universalDateTime = dateTime.ToUniversalTime();
+            var universalDateTime = TimeZoneInfo.ConvertTimeToUtc(dateTime, _configuration.ApplicationTimeZone);
             var universalTime = universalDateTime.TimeOfDay;
             
             return universalDateTime.Date.AddMinutes(Math.Round(universalTime.TotalMinutes / SamplingWindow) * SamplingWindow);
