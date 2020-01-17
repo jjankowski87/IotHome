@@ -31,13 +31,13 @@ namespace IotHomeService.App.Services
             var from = NormalizeDateTime(fromDate);
             var to = NormalizeDateTime(toDate);
 
-            var readings = await _storageExplorer.ListSensorDetailsAsync(from, to);
+            var readings = await _storageExplorer.ListSensorDetailsAsync(@from, to);
 
             return readings.GroupBy(r => new SensorDetails(r.Body.Sensor, r.Body.Name))
                 .ToDictionary(g => g.Key, g => (IList<SensorReading>)AdjustReadings(g.ToList(), from, to).ToList());
         }
 
-        private IEnumerable<SensorReading> AdjustReadings(IList<IotMessage<Reading>> readings, DateTime from, DateTime to)
+        private IEnumerable<SensorReading> AdjustReadings(IList<IotMessage<Reading>> readings, DateTimeOffset from, DateTimeOffset to)
         {
             var window = (to - from).TotalMinutes;
 
@@ -45,24 +45,24 @@ namespace IotHomeService.App.Services
             foreach (var readingTime in Enumerable.Range(0, (int)Math.Ceiling(window / SamplingWindow) + 1).Select(i => from.AddMinutes(i * SamplingWindow)))
             {
                 var matching = readings.Where(r => Math.Abs((r.EnqueuedTimeUtc - readingTime).TotalMinutes) <= HalfWindow).ToList();
-                var localTime = TimeZoneInfo.ConvertTimeFromUtc(readingTime, _configuration.ApplicationTimeZone);
+                var localTime = TimeZoneInfo.ConvertTime(readingTime, _configuration.ApplicationTimeZone);
 
-                result.Add(new SensorReading(
-                    new DateTimeOffset(localTime, _configuration.ApplicationTimeZone.GetUtcOffset(localTime)),
+                result.Add(new SensorReading(localTime,
                     matching.Any() ? matching.Average(m => m.Body.Value) : (decimal?) null));
             }
 
             return result;
         }
 
-        private DateTime NormalizeDateTime(DateTime dateTime)
+        private DateTimeOffset NormalizeDateTime(DateTime dateTime)
         {
-            var universalDateTime = new DateTimeOffset(dateTime, _configuration.ApplicationTimeZone.GetUtcOffset(dateTime))
-                    .ToUniversalTime().DateTime;
-            var universalTime = universalDateTime.TimeOfDay;
+            var utc = dateTime.Kind == DateTimeKind.Utc
+                ? new DateTimeOffset(dateTime, TimeSpan.Zero)
+                : new DateTimeOffset(dateTime, _configuration.ApplicationTimeZone.GetUtcOffset(dateTime)).ToUniversalTime();
 
-            return universalDateTime.Date.AddMinutes(Math.Round(universalTime.TotalMinutes / SamplingWindow) *
-                                                     SamplingWindow);
+            var normalizedMinutes = Math.Round(utc.TimeOfDay.TotalMinutes / SamplingWindow) * SamplingWindow;
+
+            return utc.Add(-utc.TimeOfDay).AddMinutes(normalizedMinutes);
         }
     }
 }

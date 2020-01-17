@@ -16,11 +16,9 @@ namespace IotHomeService.Services
             _storageHelper = storageHelper;
         }
 
-        public async Task<IEnumerable<IotMessage<Reading>>> ListSensorDetailsAsync(DateTime from, DateTime to)
+        public async Task<IEnumerable<IotMessage<Reading>>> ListSensorDetailsAsync(DateTimeOffset @from,
+            DateTimeOffset to)
         {
-            from = from.ToUniversalTime();
-            to = to.ToUniversalTime();
-
             var dateDirectories = await _storageHelper.ListDateDirectoriesAsync();
             var matchingDirectories = dateDirectories.Where(d => d.Date >= from.Date && d.Date <= to.Date);
 

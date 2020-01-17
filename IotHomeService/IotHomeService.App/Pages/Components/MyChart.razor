@@ -3,7 +3,6 @@
 @using IotHomeService.App.Services.Interfaces
 @using IotHomeService.Model
 @inject IReadingsService ReadingsService;
-@inject AppConfiguration Configuration;
 
 <LineChart @ref="_lineChart" TItem="decimal?" />
 
@@ -58,7 +57,7 @@
 
     private void AddLabels(IEnumerable<DateTimeOffset> labels)
     {
-        _lineChart.AddLabel(labels.Select(l => TimeZoneInfo.ConvertTime(l, Configuration.ApplicationTimeZone).ToString("yyyy-MM-dd HH:mm")).ToArray());
+        _lineChart.AddLabel(labels.Select(l => l.ToString("yyyy-MM-dd HH:mm")).ToArray());
     }
 
     private void AddData(IEnumerable<decimal?> data, string header, int colorIndex = 0)

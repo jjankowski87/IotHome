@@ -5,7 +5,7 @@ namespace IotHomeService.Services.Models
 {
     public class TimeBlob
     {
-        public TimeBlob(CloudBlockBlob blob, DateTime dateTime)
+        public TimeBlob(CloudBlockBlob blob, DateTimeOffset dateTime)
         {
             Blob = blob;
             DateTime = dateTime;
@@ -13,6 +13,6 @@ namespace IotHomeService.Services.Models
 
         public CloudBlockBlob Blob { get; }
 
-        public DateTime DateTime { get; }
+        public DateTimeOffset DateTime { get; }
     }
 }

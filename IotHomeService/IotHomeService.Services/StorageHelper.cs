@@ -62,7 +62,7 @@ namespace IotHomeService.Services
                 if (TimeSpan.TryParseExact(timePart, TimeFormat, CultureInfo.InvariantCulture, TimeSpanStyles.None,
                     out var time))
                 {
-                    result.Add(new TimeBlob(blob, directory.Date.Add(time)));
+                    result.Add(new TimeBlob(blob, new DateTimeOffset(directory.Date.Add(time), TimeSpan.Zero)));
                 }
             }
 

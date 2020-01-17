@@ -7,6 +7,6 @@ namespace IotHomeService.Services.Interfaces
 {
     public interface IStorageExplorer
     {
-        Task<IEnumerable<IotMessage<Reading>>> ListSensorDetailsAsync(DateTime from, DateTime to);
+        Task<IEnumerable<IotMessage<Reading>>> ListSensorDetailsAsync(DateTimeOffset @from, DateTimeOffset to);
     }
 }

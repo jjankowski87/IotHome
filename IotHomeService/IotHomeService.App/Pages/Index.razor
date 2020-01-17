@@ -97,7 +97,7 @@
 
         if (IsRelativeChecked)
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             await _decimalChart.ShowChart(now.AddMinutes(-_relativeMinutes), now);
         }
     }
