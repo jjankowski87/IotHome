@@ -65,12 +65,19 @@ namespace IotHomeService.App.Services
 
         private DateTimeOffset NormalizeDateTime(DateTime dateTime, int samplingWindow)
         {
-            var utc = dateTime.Kind == DateTimeKind.Utc
-                ? new DateTimeOffset(dateTime, TimeSpan.Zero)
-                : new DateTimeOffset(dateTime, _configuration.ApplicationTimeZone.GetUtcOffset(dateTime)).ToUniversalTime();
+            DateTimeOffset utc;
+            if (dateTime.Kind == DateTimeKind.Utc)
+            {
+                utc = new DateTimeOffset(dateTime, TimeSpan.Zero);
+            }
+            else
+            {
+                var unspecified = DateTime.SpecifyKind(dateTime, DateTimeKind.Unspecified);
+                utc = new DateTimeOffset(unspecified, _configuration.ApplicationTimeZone.GetUtcOffset(unspecified))
+                    .ToUniversalTime();
+            }
 
             var normalizedMinutes = Math.Round(utc.TimeOfDay.TotalMinutes / samplingWindow) * samplingWindow;
-
             return utc.Add(-utc.TimeOfDay).AddMinutes(normalizedMinutes);
         }
 
