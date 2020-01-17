@@ -1,4 +1,6 @@
 ﻿@page "/"
+@using Blazorise.Components;
+@using IotHomeService.App.Models
 @using IotHomeService.App.Services.Interfaces
 @using IotHomeService.App.Pages.Components;
 @using IotHomeService.Model
@@ -8,25 +10,64 @@
 
 <Spinner @ref="_spinner" />
 <CascadingValue Value="_spinner">
-    <h1>Home</h1>
+    <div class="select-filter-type">
+        <CheckEdit RadioGroup="filterType" Checked="@IsRelativeChecked" CheckedChanged="@(check => OnFilterTypeChanged(check, FilterType.Relative))">Relative</CheckEdit>
+        <CheckEdit RadioGroup="filterType" Checked="@IsAbsoluteChecked" CheckedChanged="@(check => OnFilterTypeChanged(check, FilterType.Absolute))">Absolute</CheckEdit>
+    </div>
 
-    <DateTimeField @bind-DateTime="_from" />
-    <DateTimeField @bind-DateTime="_to" />
-    <Button Clicked="@OnFilterClicked">Filter</Button>
+    @if (IsAbsoluteChecked)
+    {
+        <div class="filter-by-date">
+            <span>from</span>
+            <DateTimeField @bind-DateTime="_from" />
+            <span>to</span>
+            <DateTimeField @bind-DateTime="_to" />
+            <Button Color="Color.Info" Clicked="@OnFilterClicked">Filter</Button>
+        </div>
+    }
+
+    @if (IsRelativeChecked)
+    {
+        <div class="filter-by-time">
+            <span>last</span>
+            <SelectList Data="@_relativeOptions" TextField="@(item => item.Text)" ValueField="@(item => item.Value)" SelectedValueChanged="@OnRelativeTimeChanged" />
+            <Button Color="Color.Info" Clicked="@OnFilterClicked">Filter</Button>
+        </div>
+    }
 
     <MyChart @ref="_decimalChart" />
 </CascadingValue>
 
 @code {
+    private static readonly IList<SelectValue<int>> _relativeOptions = new[]
+    {
+        new SelectValue<int>(60, "1h"), new SelectValue<int>(120, "2h"), new SelectValue<int>(240, "4h"),
+        new SelectValue<int>(480, "8h"), new SelectValue<int>(720, "12h"), new SelectValue<int>(1440, "24h")
+    };
+
     private Spinner _spinner;
     private MyChart _decimalChart;
 
+    private int _relativeMinutes = _relativeOptions.First().Value;
+    private FilterType _filterType = FilterType.Relative;
     private DateTime _from = DateTime.Today;
     private DateTime _to = DateTime.Today.AddDays(1);
+
+    private bool IsAbsoluteChecked => _filterType == FilterType.Absolute;
+    private bool IsRelativeChecked => _filterType == FilterType.Relative;
 
     protected override async Task OnInitializedAsync()
     {
         ReadingsNotifier.NewReadingsAppeared += OnNewReadingsAppeared;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Force refresh spinner to child components
+            StateHasChanged();
+        }
     }
 
     public void Dispose()
@@ -47,11 +88,30 @@
 
     private async Task OnFilterClicked()
     {
-        if (_from > _to)
+        // TODO: set max window size (maybe 1 week)
+        if (IsAbsoluteChecked && _to >= _from)
         {
+            await _decimalChart.ShowChart(_from, _to);
             return;
         }
 
-        await _decimalChart.ShowChart(_from, _to);
+        if (IsRelativeChecked)
+        {
+            var now = DateTime.Now;
+            await _decimalChart.ShowChart(now.AddMinutes(-_relativeMinutes), now);
+        }
+    }
+
+    private void OnFilterTypeChanged(bool check, FilterType filterType)
+    {
+        if (check)
+        {
+            _filterType = filterType;
+        }
+    }
+
+    private void OnRelativeTimeChanged(object newValue)
+    {
+        _relativeMinutes = int.Parse(newValue.ToString());
     }
 }

@@ -149,14 +149,43 @@ app {
     }
 }
 
-div.number-of-items select {
-    width: 100px;
-    float: right;
+div.select-filter-type {
+    display: inline-block;
 }
 
-div.custom-checkbox input.checkbox-child {
-    position: inherit;
+div.filter-by-date {
+    display: inline-block;
+}
+
+div.filter-by-time {
+    display: inline-block;
+}
+
+div.filter-by-date button {
+    margin-top: -4px;
+}
+
+div.filter-by-date,.filter-by-time span {
+    font-weight: bold;
+    margin-right: 10px;
     margin-left: 10px;
+}
+
+div.filter-by-time select {
+    width: 200px;
+    margin-top: -3px
+}
+
+div.filter-by-time button {
+    margin-top: -3px;
+}
+
+div.date-time-component select.custom-select:nth-child(3) {
+    margin-left: -2px;
+}
+
+div.date-time-component {
+    display: inline-block;
 }
 
 div.date-time-component input.form-control {
