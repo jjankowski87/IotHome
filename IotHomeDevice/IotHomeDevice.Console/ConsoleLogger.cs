@@ -1,5 +1,5 @@
 ﻿using System;
-using IotHomeDevice.Interfaces;
+using IotHomeDevice.Interface;
 
 namespace IotHomeDevice.Console
 {
@@ -8,6 +8,11 @@ namespace IotHomeDevice.Console
         public void LogInfo(string message)
         {
             System.Console.WriteLine($"{DateTimeOffset.Now:yyyy-MM-dd hh:mm:ss zzz}: {message}");
+        }
+
+        public void LogError(Exception exception, string message)
+        {
+            System.Console.WriteLine($"ERROR: {message}, {exception.Message}");
         }
     }
 }

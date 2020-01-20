@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using IotHomeDevice.Console.Configuration;
-using IotHomeDevice.Interfaces;
-using IotHomeDevice.Linux;
-using IotHomeDevice.Windows;
+using IotHomeDevice.Implementation;
+using IotHomeDevice.Implementation.Sensor;
+using IotHomeDevice.Interface;
+using IotHomeDevice.Interface.Sensor;
 using Microsoft.Azure.Devices.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,15 +34,12 @@ namespace IotHomeDevice.Console
             serviceCollection.AddTransient<ILogger, ConsoleLogger>();
             serviceCollection.AddTransient<IDevice, Device>();
             serviceCollection.AddSingleton<App>();
+            serviceCollection.AddSingleton<ISensorFactory, SensorFactory>();
+            serviceCollection.AddSingleton<IShellHelper, UnixShellHelper>();
 
-            if (OperatingSystem.IsLinux())
+            foreach (var sensorSetting in settings.SensorSettings.Where(ss => ss.IsEnabled))
             {
-                serviceCollection.AddSingleton<IShellHelper, UnixShellHelper>();
-                serviceCollection.AddTransient<IThermometer, RaspbianChipsetThermometer>();
-            }
-            else
-            {
-                serviceCollection.AddTransient<IThermometer, RandomThermometer>();
+                serviceCollection.AddTransient(p => p.GetService<ISensorFactory>().CreateSensor(sensorSetting));
             }
 
             return serviceCollection.BuildServiceProvider();

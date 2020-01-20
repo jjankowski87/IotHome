@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
-using IotHomeDevice.Interfaces;
+using IotHomeDevice.Interface;
 
-namespace IotHomeDevice.Linux
+namespace IotHomeDevice.Implementation
 {
     public class UnixShellHelper : IShellHelper
     {

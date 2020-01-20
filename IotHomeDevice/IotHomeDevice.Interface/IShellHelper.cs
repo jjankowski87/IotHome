@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace IotHomeDevice.Interfaces
+namespace IotHomeDevice.Interface
 {
     public interface IShellHelper
     {

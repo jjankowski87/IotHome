@@ -1,4 +1,5 @@
 ﻿using System;
+using IotHomeDevice.Model;
 
 namespace IotHomeDevice.Console.Configuration
 {
@@ -9,5 +10,7 @@ namespace IotHomeDevice.Console.Configuration
         public int ProcessingIntervalInSeconds { get; set; }
 
         public TimeSpan ProcessingInterval => TimeSpan.FromSeconds(ProcessingIntervalInSeconds);
+
+        public SensorSettings[] SensorSettings { get; set; }
     }
 }
