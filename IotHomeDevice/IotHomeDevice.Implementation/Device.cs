@@ -5,7 +5,7 @@ using IotHomeDevice.Interface.Sensor;
 using Microsoft.Azure.Devices.Client;
 using Newtonsoft.Json;
 
-namespace IotHomeDevice.Console
+namespace IotHomeDevice.Implementation
 {
     public class Device : IDevice
     {
@@ -20,10 +20,10 @@ namespace IotHomeDevice.Console
 
         public async Task ProcessSensorAsync(ISensor sensor)
         {
-            var sensorType = sensor.Type.ToString().ToLowerInvariant();
+            var readingType = sensor.ReadingType.ToString().ToLowerInvariant();
             var telemetryDataPoint = new
             {
-                Sensor = sensorType,
+                Sensor = readingType,
                 Name = sensor.Name,
                 Value = sensor.ReadValue()
             };
@@ -33,7 +33,7 @@ namespace IotHomeDevice.Console
 
             message.Properties.Add("IsReading", "true");
 
-            _logger.LogInfo($"Sending {sensorType} {telemetryDataPoint.Value} to IoT hub");
+            _logger.LogInfo($"Sending {sensor.Name} {readingType} {telemetryDataPoint.Value} to IoT hub");
 
             await _client.SendEventAsync(message);
         }

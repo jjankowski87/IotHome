@@ -16,7 +16,7 @@ namespace IotHomeDevice.Implementation.Sensor
             Name = name;
         }
 
-        public ReadingType Type => ReadingType.Temperature;
+        public ReadingType ReadingType => ReadingType.Temperature;
 
         public string Name { get; }
 

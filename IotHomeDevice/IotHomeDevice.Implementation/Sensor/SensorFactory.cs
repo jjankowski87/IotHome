@@ -18,12 +18,12 @@ namespace IotHomeDevice.Implementation.Sensor
         {
             switch (sensorSettings.Type)
             {
-                case SensorType.Random:
+                case SensorType.RandomThermometer:
                     return new RandomThermometer();
-                case SensorType.Chipset:
+                case SensorType.ChipsetThermometer:
                     return new ChipsetThermometer(_shellHelper, sensorSettings.Name);
                 case SensorType.DS18B20:
-                    return new DS18B20Thermometer(_shellHelper, sensorSettings.Name);
+                    return new DS18B20Thermometer(_shellHelper, sensorSettings);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

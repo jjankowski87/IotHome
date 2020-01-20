@@ -4,7 +4,7 @@ namespace IotHomeDevice.Interface.Sensor
 {
     public interface ISensor
     {
-        ReadingType Type { get; }
+        ReadingType ReadingType { get; }
 
         string Name { get; }
 

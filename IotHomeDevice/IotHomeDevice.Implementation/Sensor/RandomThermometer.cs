@@ -9,7 +9,7 @@ namespace IotHomeDevice.Implementation.Sensor
     {
         private static readonly Random Random = new Random(DateTime.Now.Millisecond);
 
-        public ReadingType Type => ReadingType.Temperature;
+        public ReadingType ReadingType => ReadingType.Temperature;
 
         public string Name => "random";
 

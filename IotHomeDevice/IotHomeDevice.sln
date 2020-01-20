@@ -9,7 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IotHomeDevice.Implementatio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IotHomeDevice.Interface", "IotHomeDevice.Interface\IotHomeDevice.Interface.csproj", "{BB4002FB-EEE9-44CA-B140-BB224E29893A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotHomeDevice.Model", "IotHomeDevice.Model\IotHomeDevice.Model.csproj", "{17526B50-0504-446C-ABBC-2058A3EBF4CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IotHomeDevice.Model", "IotHomeDevice.Model\IotHomeDevice.Model.csproj", "{17526B50-0504-446C-ABBC-2058A3EBF4CE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{2A19B95E-69F0-4B0B-A3E1-00DDFFE16F43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotHomeDevice.Implementation.Test", "test\IotHomeDevice.Implementation.Test\IotHomeDevice.Implementation.Test.csproj", "{11FBA14F-C236-4A7B-A290-57FFDE3A8235}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,9 +37,16 @@ Global
 		{17526B50-0504-446C-ABBC-2058A3EBF4CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17526B50-0504-446C-ABBC-2058A3EBF4CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17526B50-0504-446C-ABBC-2058A3EBF4CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11FBA14F-C236-4A7B-A290-57FFDE3A8235}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11FBA14F-C236-4A7B-A290-57FFDE3A8235}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11FBA14F-C236-4A7B-A290-57FFDE3A8235}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11FBA14F-C236-4A7B-A290-57FFDE3A8235}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{11FBA14F-C236-4A7B-A290-57FFDE3A8235} = {2A19B95E-69F0-4B0B-A3E1-00DDFFE16F43}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F0F43F0B-7448-4762-B041-A1282349FEAD}

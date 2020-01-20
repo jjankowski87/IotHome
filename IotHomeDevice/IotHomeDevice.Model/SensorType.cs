@@ -2,8 +2,8 @@
 {
     public enum SensorType
     {
-        Random,
-        Chipset,
+        RandomThermometer,
+        ChipsetThermometer,
         DS18B20
     }
 }

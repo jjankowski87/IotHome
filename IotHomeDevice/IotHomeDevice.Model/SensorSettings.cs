@@ -6,6 +6,8 @@
 
         public SensorType Type { get; set; }
 
+        public string DeviceId { get; set; }
+
         public bool IsEnabled { get; set; }
     }
 }

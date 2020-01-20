@@ -34,7 +34,7 @@ namespace IotHomeDevice.Console
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, $"Exception while processing data from {sensor.Type} sensor ({sensor.Name}).");
+                        _logger.LogError(ex, $"Exception while processing data from {sensor.ReadingType} sensor ({sensor.Name}).");
                     }
                 }
 
