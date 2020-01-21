@@ -9,7 +9,11 @@ namespace IotHomeDevice.Console.Configuration
 
         public int ProcessingIntervalInSeconds { get; set; }
 
+        public int IotHubSendIntervalInSeconds { get; set; }
+
         public TimeSpan ProcessingInterval => TimeSpan.FromSeconds(ProcessingIntervalInSeconds);
+
+        public TimeSpan IotHubSendInterval => TimeSpan.FromSeconds(IotHubSendIntervalInSeconds);
 
         public SensorSettings[] SensorSettings { get; set; }
     }
