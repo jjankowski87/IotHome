@@ -46,7 +46,12 @@
 
     private async Task OnChartLineCheckChanged(bool check, CheckboxValue<SensorDetails> checkboxValue)
     {
-        checkboxValue.IsChecked = check;
+        var checkbox = _chartData.FirstOrDefault(cd => cd.Key.Value.Equals(checkboxValue.Value)).Key;
+        if (checkbox != null)
+        {
+            checkbox.IsChecked = check;
+        }
+        
         await RefreshChartDataAsync();
     }
 
