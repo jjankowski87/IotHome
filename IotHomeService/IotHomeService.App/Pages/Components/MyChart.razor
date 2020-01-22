@@ -1,15 +1,36 @@
 ﻿@using Blazorise.Charts;
-@using IotHomeService.App.Configuration
+@using Blazorise.Components;
+@using IotHomeService.App.Models
 @using IotHomeService.App.Services.Interfaces
 @using IotHomeService.Model
 @inject IReadingsService ReadingsService;
 
-<LineChart @ref="_lineChart" TItem="decimal?" />
+<div>
+    <div class="line-selector">
+        @foreach (var (data, color) in _chartData.Zip(Colors))
+        {
+            <span class="@color.Name">
+                <CheckEdit IsInline="true" Checked="@data.Key.IsChecked" Cursor="@Cursor.Pointer" CheckedChanged="@(async check => await OnChartLineCheckChanged(check, data.Key))">@data.Key.Value.Type - @data.Key.Value.Name</CheckEdit>
+            </span>
+        }
+    </div>
+
+    <LineChart @ref="_lineChart" TItem="decimal?" OptionsJsonString="@Options" />
+</div>
 
 @code {
-    private readonly List<string> _backgroundColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.2f), ChartColor.FromRgba(54, 162, 235, 0.2f), ChartColor.FromRgba(255, 206, 86, 0.2f), ChartColor.FromRgba(75, 192, 192, 0.2f), ChartColor.FromRgba(153, 102, 255, 0.2f), ChartColor.FromRgba(255, 159, 64, 0.2f) };
-    private readonly List<string> _borderColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f), ChartColor.FromRgba(54, 162, 235, 1f), ChartColor.FromRgba(255, 206, 86, 1f), ChartColor.FromRgba(75, 192, 192, 1f), ChartColor.FromRgba(153, 102, 255, 1f), ChartColor.FromRgba(255, 159, 64, 1f) };
+    private static readonly string Options = "{\"legend\":{\"display\": false}}";
+    private static readonly IList<MyChartColor> Colors = new[]
+    {
+        new MyChartColor("red", 255, 99, 132),
+        new MyChartColor("blue", 54, 162, 235),
+        new MyChartColor("yellow", 255, 206, 86),
+        new MyChartColor("navy", 75, 192, 192),
+        new MyChartColor("purple", 153, 102, 255),
+        new MyChartColor("orange", 255, 159, 64)
+    };
 
+    private IDictionary<CheckboxValue<SensorDetails>, IList<SensorReading>> _chartData = new Dictionary<CheckboxValue<SensorDetails>, IList<SensorReading>>();
     private LineChart<decimal?> _lineChart;
 
     [CascadingParameter]
@@ -19,37 +40,53 @@
     {
         if (firstRender)
         {
-            await RefreshChartDataAsync(new Dictionary<SensorDetails, IList<SensorReading>>());
+            await RefreshChartDataAsync();
         }
+    }
+
+    private async Task OnChartLineCheckChanged(bool check, CheckboxValue<SensorDetails> checkboxValue)
+    {
+        checkboxValue.IsChecked = check;
+        await RefreshChartDataAsync();
     }
 
     public async Task ShowChart(DateTime from, DateTime to)
     {
         using (Spinner.ShowSpinner())
         {
+            var selection = _chartData.Keys.ToList();
+
             var readings = await ReadingsService.GetReadingsAsync(from, to);
-            await RefreshChartDataAsync(readings);
+            _chartData = readings.ToDictionary(kv => new CheckboxValue<SensorDetails>(kv.Key,
+                selection.FirstOrDefault(s => s.Value.Equals(kv.Key))?.IsChecked ?? true), kv => kv.Value);
+
+            await RefreshChartDataAsync();
         }
     }
 
-    private async Task RefreshChartDataAsync(IDictionary<SensorDetails, IList<SensorReading>> data)
+    private async Task RefreshChartDataAsync()
     {
         _lineChart.Clear();
 
-        if (data.Any())
+        if (_chartData.Any(cd => cd.Key.IsChecked))
         {
-            AddLabels(data.First().Value.Select(r => r.Date));
+            AddLabels(_chartData.First().Value.Select(r => r.Date));
 
             var i = 0;
-            foreach (var line in data)
+            foreach (var (key, readings) in _chartData)
             {
-                AddData(line.Value.Select(r => r.Value), $"{line.Key.Type} - {line.Key.Name}", i++);
+                if (key.IsChecked)
+                {
+                    AddData(readings.Select(r => r.Value), $"{key.Value.Type} - {key.Value.Name}", Colors.Skip(i % Colors.Count).First());
+                }
+
+                i++;
             }
         }
         else
         {
             AddLabels(Enumerable.Empty<DateTimeOffset>());
-            AddData(Enumerable.Empty<decimal?>(), string.Empty);
+            AddData(Enumerable.Empty<decimal?>(), string.Empty, Colors.First());
         }
 
         await _lineChart.Update();
@@ -60,14 +97,14 @@
         _lineChart.AddLabel(labels.Select(l => l.ToString("yyyy-MM-dd HH:mm")).ToArray());
     }
 
-    private void AddData(IEnumerable<decimal?> data, string header, int colorIndex = 0)
+    private void AddData(IEnumerable<decimal?> data, string header, MyChartColor color)
     {
         _lineChart.AddDataSet(new LineChartDataset<decimal?>
         {
             Label = header,
             Data = data.ToList(),
-            BackgroundColor = _backgroundColors.Skip(colorIndex % _backgroundColors.Count).Take(1).ToList(),
-            BorderColor = _borderColors.Skip(colorIndex % _borderColors.Count).Take(1).ToList(),
+            BackgroundColor = new List<string> { color.Fill },
+            BorderColor = new List<string> { color.Border },
             Fill = true,
             PointRadius = 2,
             BorderDash = new List<int>()

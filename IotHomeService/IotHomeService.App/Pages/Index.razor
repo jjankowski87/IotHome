@@ -11,8 +11,8 @@
 <Spinner @ref="_spinner" />
 <CascadingValue Value="_spinner">
     <div class="select-filter-type">
-        <CheckEdit RadioGroup="filterType" Checked="@IsRelativeChecked" CheckedChanged="@(check => OnFilterTypeChanged(check, FilterType.Relative))">Relative</CheckEdit>
-        <CheckEdit RadioGroup="filterType" Checked="@IsAbsoluteChecked" CheckedChanged="@(check => OnFilterTypeChanged(check, FilterType.Absolute))">Absolute</CheckEdit>
+        <CheckEdit RadioGroup="filterType" Checked="@IsRelativeChecked" Cursor="@Cursor.Pointer" CheckedChanged="@(check => OnFilterTypeChanged(check, FilterType.Relative))">Relative</CheckEdit>
+        <CheckEdit RadioGroup="filterType" Checked="@IsAbsoluteChecked" Cursor="@Cursor.Pointer" CheckedChanged="@(check => OnFilterTypeChanged(check, FilterType.Absolute))">Absolute</CheckEdit>
     </div>
 
     @if (IsAbsoluteChecked)
@@ -56,12 +56,12 @@
     private bool IsAbsoluteChecked => _filterType == FilterType.Absolute;
     private bool IsRelativeChecked => _filterType == FilterType.Relative;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         ReadingsNotifier.NewReadingsAppeared += OnNewReadingsAppeared;
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
