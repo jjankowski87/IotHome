@@ -1,6 +1,9 @@
 using System;
+using IotHomeService.Model;
 using IotHomeService.ReadingsMonitor;
 using IotHomeService.ReadingsMonitor.Configuration;
+using IotHomeService.Services;
+using IotHomeService.Services.Interfaces;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,11 +26,18 @@ namespace IotHomeService.ReadingsMonitor
             var appSettings = config.GetConfigSection<AppSettings>("Values");
 
             services.AddSingleton(appSettings);
+            services.AddSingleton(new StorageConfiguration
+            {
+                ConnectionString = appSettings.BlobStorageConnectionString,
+                ContainerName = appSettings.StorageContainerName,
+                ParentDirectory = appSettings.StorageDirectory
+            });
         }
 
         private static void RegisterDependencies(IServiceCollection services)
         {
             services.AddSingleton<IAppNotifier, AppNotifier>();
+            services.AddSingleton<IStorageHelper, StorageHelper>();
         }
 
         private static IConfiguration BuildConfigurationRoot()

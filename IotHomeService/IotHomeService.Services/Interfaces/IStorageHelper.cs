@@ -12,5 +12,7 @@ namespace IotHomeService.Services.Interfaces
         Task<IEnumerable<TimeBlob>> ListTimeBlobsAsync(DateDirectory directory);
 
         Task<IEnumerable<IotMessage<Reading>>> ListMessagesAsync(TimeBlob blob);
+
+        Task<IEnumerable<IotMessage<Reading>>> ListMessagesAsync(string path);
     }
 }

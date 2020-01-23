@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using IotHomeService.Model;
@@ -29,6 +30,16 @@ namespace IotHomeService.Services
 
             var storageAccount = CloudStorageAccount.Parse(configuration.ConnectionString);
             _blobClient = storageAccount.CreateCloudBlobClient();
+        }
+
+        public async Task<IEnumerable<IotMessage<Reading>>> ListMessagesAsync(string blobPath)
+        {
+            var container = _blobClient.GetContainerReference(_containerName);
+
+            var blob = container.GetBlockBlobReference(Path.Combine(_parentDirectory, blobPath));
+            var content = await blob.DownloadTextAsync();
+
+            return ReadingFileHelper.GetMessages(content);
         }
 
         public async Task<IEnumerable<DateDirectory>> ListDateDirectoriesAsync()
